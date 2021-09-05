@@ -1,0 +1,36 @@
+#!/bin/sh
+set -e
+
+nixinstall() {
+	mkdir -p "$HOME"/.vim
+	cp vimrc "$HOME"/.vimrc
+	cp prettierrc "$HOME"/.prettierrc
+	cp stylelintrc "$HOME"/.stylelintrc
+	cp lua-format "$HOME"/.lua-format
+	for i in backup swap view undo; do
+		mkdir -p "$HOME"/.vim/cache/$i
+	done
+	#mkdir -p "$HOME"/.vim/pack/plugins/start
+	#cp -R plugins/* "$HOME"/.vim/pack/plugins/start/
+}
+
+wininstall() {
+	cp vimrc "$HOME"/_vimrc
+	mkdir -p "$HOME"/vimfiles
+	cp prettierrc "$HOME"/.prettierrc
+	cp stylelintrc "$HOME"/.stylelintrc
+	cp lua-format "$HOME"/.lua-format
+	cp -R configs/* "$HOME"/vimfiles
+	mkdir -p "$HOME"/vimfiles/pack/plugins/start
+	cp -R plugins/* "$HOME"/vimfiles/pack/plugins/start/
+}
+
+case $(uname -s | awk '{print tolower($0)}') in 
+	linux*|*bsd*|*darwin*)
+		nixinstall;;
+	mingw64*)
+		wininstall;;
+	*)
+		printf 'What are you doing?\n';;
+esac
+
