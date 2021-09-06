@@ -7,6 +7,7 @@ nixinstall() {
 	cp prettierrc "$HOME"/.prettierrc
 	cp stylelintrc "$HOME"/.stylelintrc
 	cp lua-format "$HOME"/.lua-format
+	cp ptop.cfg "$HOME"/.ptop.cfg
 	for i in backup swap view undo; do
 		mkdir -p "$HOME"/.vim/cache/$i
 	done
@@ -20,17 +21,20 @@ wininstall() {
 	cp prettierrc "$HOME"/.prettierrc
 	cp stylelintrc "$HOME"/.stylelintrc
 	cp lua-format "$HOME"/.lua-format
+	cp ptop.cfg "$HOME"/.ptop.cfg
 	cp -R configs/* "$HOME"/vimfiles
 	mkdir -p "$HOME"/vimfiles/pack/plugins/start
 	cp -R plugins/* "$HOME"/vimfiles/pack/plugins/start/
 }
 
-case $(uname -s | awk '{print tolower($0)}') in 
-	linux*|*bsd*|*darwin*)
-		nixinstall;;
-	mingw64*)
-		wininstall;;
-	*)
-		printf 'What are you doing?\n';;
+case $(uname -s | awk '{print tolower($0)}') in
+linux* | *bsd* | *darwin*)
+	nixinstall
+	;;
+mingw64*)
+	wininstall
+	;;
+*)
+	printf 'What are you doing?\n'
+	;;
 esac
-
