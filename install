@@ -8,11 +8,10 @@ nixinstall() {
 	cp stylelintrc "$HOME"/.stylelintrc
 	cp lua-format "$HOME"/.lua-format
 	cp ptop.cfg "$HOME"/.ptop.cfg
+  cp clang-format "$HOME"/.clang-format
 	for i in backup swap view undo; do
 		mkdir -p "$HOME"/.vim/cache/$i
 	done
-	#mkdir -p "$HOME"/.vim/pack/plugins/start
-	#cp -R plugins/* "$HOME"/.vim/pack/plugins/start/
 }
 
 wininstall() {
@@ -22,6 +21,7 @@ wininstall() {
 	cp stylelintrc "$HOME"/.stylelintrc
 	cp lua-format "$HOME"/.lua-format
 	cp ptop.cfg "$HOME"/.ptop.cfg
+  cp clang-format "$HOME"/.clang-format
 	cp -R configs/* "$HOME"/vimfiles
 	mkdir -p "$HOME"/vimfiles/pack/plugins/start
 	cp -R plugins/* "$HOME"/vimfiles/pack/plugins/start/
