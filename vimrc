@@ -118,7 +118,6 @@ let g:ale_fixers={
 	\'css': ['prettier'],
 	\'html': ['prettier'],
 	\'javascript': ['eslint'],
-	\'sh': ['shfmt'],
 \}
 let g:ale_javascript_prettier_options='--config ~/.prettierrc'
 let g:ale_css_prettier_options='--config ~/.prettierrc'
