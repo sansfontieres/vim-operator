@@ -25,6 +25,7 @@ call minpac#add('k-takata/minpac', {'type': 'opt'})
 	call minpac#add('ludovicchabant/vim-gutentags')
 	call minpac#add('tpope/vim-repeat')
 	call minpac#add('tpope/vim-surround')
+	call minpac#add('tpope/vim-dispatch', {'type': 'opt'})
 	call minpac#add('justinmk/vim-sneak')
 	call minpac#add('romainl/vim-qf')
 	call minpac#add('haya14busa/vim-asterisk')
@@ -42,6 +43,8 @@ call minpac#add('k-takata/minpac', {'type': 'opt'})
 	call minpac#add('thinca/vim-quickrun', {'type': 'opt'})
 	call minpac#add('https://git.sansfontieres.com/~sansfontieres/eleline.vim')
 	call minpac#add('mattn/emmet-vim', {'type': 'opt'})
+	call minpac#add('tpope/vim-rails', {'type': 'opt'})
+	call minpac#add('tpope/vim-bundler', {'type': 'opt'})
 	" Syntax Highlighting
 	call minpac#add('vim-scripts/SyntaxRange')
 	call minpac#add('vim-jp/vim-cpp')
@@ -78,7 +81,8 @@ command! PackStatus packadd minpac | call minpac#status()
 command! -nargs=* Gina :packadd gina.vim | Gina <f-args>
 command! -nargs=* Startuptime :packadd vim-startuptime | StartupTime <f-args>
 command! -nargs=* QuickRun :packadd vim-quickrun | QuickRun <f-args>
-command! LazyDev :packadd ale | packadd vista.vim | packadd mesonic
+command! LazyDev :packadd ale | packadd vista.vim | packadd mesonic | packadd vim-dispatch
+command! RailsStuff :packadd vim-rails | packadd vim-bundler
 command! Lhg packadd vim-lawrencium
 augroup PackLazy
 	autocmd!
@@ -132,14 +136,13 @@ let g:meson_ninja_command = 'samu'
 " Gutentags
 let g:gutentags_cache_dir='~/.vim/cache/gutentags'
 
+
 " incsearch
 map *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
 map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
 map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
 map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
 
-" QuickRun
-"let g:quickrun_config = {}
 
 " eleline
 let g:eleline_powerline_fonts = 1
@@ -150,6 +153,7 @@ let g:vista#renderer#icons = {
 \   "function": "ƒ",
 \   "variable": "\uf71b",
 \  }
+
 
 " »General«
 
@@ -197,7 +201,6 @@ set mouse=a
 " Normal human buffers
 set hidden
 set splitright
-set splitbelow
 
 
 " Superhuman smart (jk, still normal human)
@@ -246,7 +249,7 @@ set wildignorecase
 set lazyredraw
 
 
-" Keep I don't want my gutter to move around
+" I don't want my gutter to move around
 set signcolumn=yes
 
 
@@ -259,13 +262,13 @@ set fillchars+=vert:│
 " Filetype preferences
 augroup FileTypes
 	autocmd!
-	autocmd FileType c setlocal noet ts=2 sw=2 tw=80
-	autocmd FileType h setlocal noet ts=2 sw=2 tw=80
-	autocmd FileType cpp setlocal noet ts=2 sw=2 tw=80
-	autocmd FileType pascal setlocal noet ts=2 sw=2 tw=80
-	autocmd FileType lua setlocal noet ts=2 sw=2 tw=80
+	autocmd FileType c setlocal et ts=2 sw=2 tw=80
+	autocmd FileType h setlocal et ts=2 sw=2 tw=80
+	autocmd FileType cpp setlocal et ts=2 sw=2 tw=80
+	autocmd FileType pascal setlocal et ts=2 sw=2 tw=80
+	autocmd FileType lua setlocal et ts=2 sw=2 tw=80
 	autocmd FileType go setlocal noet ts=4 sw=4
-	autocmd FileType sh setlocal noet ts=2 sw=2
+	autocmd FileType sh setlocal et ts=2 sw=2
 	autocmd BufRead,BufNewFile *.js setlocal et ts=2 sw=2
 	autocmd FileType html setlocal et ts=2 sw=2
 	autocmd FileType ruby setlocal et ts=2 sw=2
@@ -284,16 +287,18 @@ let g:pascal_fpc=1
 let g:c_syntax_for_h = 1
 
 
-
 " I want to spell like a normal human
 nnoremap <leader>ds :set spell!<CR>:set spell?<CR>
 nnoremap <leader>dfr :set spelllang=fr<CR>
 nnoremap <leader>den :set spelllang=en_gb<CR>
 
 
-" Some light completion
+" light completion
 set omnifunc=syntaxcomplete#Complete
 
+
+" When I use my build scripts instead of makefiles
+command! BuildScript :let b:dispatch = "./build.sh"
 
 
 """"""""""""""
@@ -315,11 +320,6 @@ vnoremap <C-S> <C-C>:update<CR>
 nnoremap <CR> o<Esc>
 
 
-"" Motions like a normal human
-"nnoremap j gj
-"nnoremap k gk
-
-
 " Move lines like a normal human
 nnoremap <C-Down> :m .+1<CR>==
 nnoremap <C-Up> :m .-2<CR>==
@@ -332,10 +332,16 @@ nnoremap <silent> <leader>w :set list!<CR>
 
 
 " Quickfix/Location list
-nnoremap <silent> <C-N> :cnext<CR>
-nnoremap <silent> <C-P> :cprev<CR>
-nnoremap <silent> <leader>co :copen<CR>
-nnoremap <silent> <leader>cc :cclose<CR>
+function! QfToggle()
+    if getqflist({'winid' : 0}).winid
+        cclose
+    else
+        copen
+    endif
+endfunction
+nnoremap <silent> <C-J> :cnext<CR>
+nnoremap <silent> <C-K> :cprev<CR>
+nnoremap <silent> <C-D> :call QfToggle()<CR>
 
 " Easier command line access & remap for Sneak
 nnoremap : ;
@@ -350,6 +356,7 @@ if has('gui_running')
 endif
 
 " Buffer/Tabs management
+nnoremap <C-P> :Clap<CR>
 nnoremap <leader>o :Clap files<CR>
 nnoremap <leader><Tab> :Clap buffers<CR>
 nnoremap <leader>p :bp<CR>
@@ -391,6 +398,11 @@ elseif &filetype==#'python'
 	inoremap <silent> <F4> :python3 "%"<CR>
 endif
 
+
+" Launch build
+noremap <F3> :make<CR>
+inoremap <F3> :make<CR>
+vnoremap <F3> :make<CR>
 
 
 """"""""""""""""""
