@@ -66,6 +66,7 @@ call minpac#add('k-takata/minpac', {'type': 'opt'})
 	call minpac#add('davidoc/taskpaper.vim')
 	call minpac#add('mesonbuild/meson')
 	call minpac#add('lifepillar/vim-colortemplate')
+	call minpac#add('ziglang/zig.vim')
 	call minpac#add('https://tildegit.org/sloum/gemini-vim-syntax', {'do': 'make'})
 endfunction
 filetype plugin indent on
@@ -87,7 +88,7 @@ command! Lhg packadd vim-lawrencium
 augroup PackLazy
 	autocmd!
 	autocmd FileType colortemplate packadd vim-colortemplate
-	autocmd FileType html,css,scss,eruby,etlua packadd emmet-vim
+	autocmd FileType html,css,scss,eruby,etlua,gohtmltmpl packadd emmet-vim
 augroup END
 
 
@@ -271,12 +272,17 @@ augroup FileTypes
 	autocmd FileType sh setlocal et ts=2 sw=2
 	autocmd BufRead,BufNewFile *.js setlocal et ts=2 sw=2
 	autocmd FileType html setlocal et ts=2 sw=2
+	autocmd FileType gohtmltmpl setlocal et ts=2 sw=2
+	autocmd FileType etlua setlocal et ts=2 sw=2
+	autocmd FileType moon setlocal et ts=2 sw=2
 	autocmd FileType ruby setlocal et ts=2 sw=2
+	autocmd FileType css setlocal et ts=2 sw=2
 	autocmd FileType scss setlocal et ts=2 sw=2
 	autocmd FileType yaml setlocal et ts=2 sw=2
 	autocmd FileType markdown setlocal tw=80 et ts=2 sw=2
 	autocmd FileType text setlocal noet ts=2 sw=2 tw=80
 	autocmd FileType typescript setlocal et ts=2 sw=2
+	autocmd FileType typescriptreact setlocal et ts=2 sw=2
 	autocmd FileType python setlocal et ts=2 sw=2
 	autocmd BufNewFile,BufRead *.ms set syntax=python ts=2 sw=2 noet
 	autocmd FileType mail setlocal noautoindent
@@ -295,10 +301,6 @@ nnoremap <leader>den :set spelllang=en_gb<CR>
 
 " light completion
 set omnifunc=syntaxcomplete#Complete
-
-
-" When I use my build scripts instead of makefiles
-command! BuildScript :let b:dispatch = "./build.sh"
 
 
 """"""""""""""
@@ -391,18 +393,18 @@ vnoremap c <esc>v
 
 " External calls
 if has('gui_macvim') && &filetype==#'python'
-	nnoremap <silent> <F3> :!robofont "%:p"<CR>
-	inoremap <silent> <F3> <ESC> :!robofont "%:p"<CR> 
-elseif &filetype==#'python'
-	nnoremap <silent> <F4> :python3 "%"<CR>
-	inoremap <silent> <F4> :python3 "%"<CR>
+	nnoremap <silent> <F9> :!robofont "%:p"<CR>
+	inoremap <silent> <F9> <ESC> :!robofont "%:p"<CR>
 endif
 
 
 " Launch build
-noremap <F3> :make<CR>
-inoremap <F3> :make<CR>
-vnoremap <F3> :make<CR>
+function! BuildScript()
+	set makeprg=./build.sh
+	set errorformat=%f:%l:%m
+endfunction
+noremap <F3> :Make<CR>
+inoremap <F3> :Make<CR>
 
 
 """"""""""""""""""
