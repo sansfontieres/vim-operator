@@ -1,6 +1,6 @@
+set encoding=utf-8
 scriptencoding utf-8
 
-set encoding=utf-8
 set fileencoding=utf-8
 if &compatible
 	set nocompatible
@@ -258,7 +258,8 @@ set signcolumn=yes
 set listchars=tab:┃\ ,space:·,nbsp:␣,trail:•
 
 " Split separator
-set fillchars+=vert:│
+set fillchars=vert:│
+	
 
 " Filetype preferences
 augroup FileTypes
@@ -423,7 +424,9 @@ if has('gui_running')
 		set guifont=PragmataProLiga-Regular:h11
 		set macligatures
 	elseif has('gui_win32')
-		set guifont=Pragmata_Pro:h9:cANSI
+		set guifont=PragmataPro_Mono_Liga:h11:cANSI
+		set ffs=unix,dos
+		set linespace=0
 	endif
 	if has('gui_gtk2')
 		set guifont=PragmataPro\ Liga\ 12
